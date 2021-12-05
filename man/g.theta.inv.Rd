@@ -4,14 +4,14 @@
 \alias{g.theta.inv}
 \title{\eqn{g(\theta)} function inverse}
 \usage{
-g.theta.inv(theta, lower = 0, upper = 1000, v, u = -v)
+g.theta.inv(value, lower = 0, upper = 10000, v, u = -v)
 }
 \arguments{
-\item{theta}{Parameter \eqn{\theta} of qExponential function}
-
 \item{v}{Tuning parameter}
 
 \item{u}{Tuning parameter}
+
+\item{theta}{Parameter \eqn{\theta} of qExponential function}
 }
 \description{
 Calculate the inverse of the function \eqn{g(\theta)}.
