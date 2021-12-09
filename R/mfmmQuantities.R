@@ -2,7 +2,7 @@
 #'
 #' Theoretical quantities for the mfmm
 #' @param mu true value of mu
-#' @param theta true value of thete
+#' @param theta true value of theta
 #' @param v Tuning parameter
 #' @param u Tuning parameter
 #' @export
@@ -51,8 +51,8 @@ mfmm.samples <- function(n, mu, theta, v, u = -v, samples, d = 1e-10, lower = 0,
   der.inv <- numDeriv::grad(func = g.inverse, x = Esp.Tn, method.args = list(eps = 1e-12, d = d, r = 6))
   # pracma::grad(g.inverse, Esp.Tn)
 
-  lim.inf <- ((gamma(v) * v)^u / ((gamma(u) * u)^v)) * ((-gamma(-v) * v)^u / ((-gamma(-u) * u)^v))
-  lim.sup <- (10000 + 1)^(u - v) * beta(v + 1, 10000 - v + 1)^u * beta(u + 1, 10000 - u + 1)^(-v)
+  lim.inf <- limits.g(v,u)[[1]]
+  lim.sup <- limits.g(v,u)[[2]]
 
   mu.uv <- (rowMeans(samples^v)^u) / (rowMeans(samples^u)^v)
 

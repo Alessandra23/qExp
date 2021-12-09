@@ -31,3 +31,15 @@ g.theta.inv <- function(value, lower = 0, upper = 10000, v, u = -v) {
   return(inverse.theta)
 }
 
+#' Limits of \eqn{g(\theta)} function
+#'
+#' @param u Tuning parameter
+#' @param v Tuning parameter
+#' @return A list of two elements: limit of \eqn{g(\theta)} when \eqn{\theta} goes to 0 and limit of \eqn{g(\theta)} when \eqn{\infty}
+
+limits.g <- function(v,u){
+  lim.inf <- ((gamma(v) * v)^u / ((gamma(u) * u)^v)) * ((-gamma(-v) * v)^u / ((-gamma(-u) * u)^v))
+  lim.sup <- 2^(-(u+v)/2) * exp(((log(2)+log(pi))*(u+v))/2)*pi^(-(u+v)/2) * (gamma(v+1)^u/gamma(u+1)^v)
+  return(list(lim.inf = lim.inf,
+              lim.sup = lim.sup))
+}

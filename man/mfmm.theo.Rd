@@ -9,7 +9,7 @@ mfmm.theo(mu, theta, u, v)
 \arguments{
 \item{mu}{true value of mu}
 
-\item{theta}{true value of thete}
+\item{theta}{true value of theta}
 
 \item{u}{Tuning parameter}
 
