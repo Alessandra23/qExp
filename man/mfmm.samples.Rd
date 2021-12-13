@@ -4,17 +4,7 @@
 \alias{mfmm.samples}
 \title{Observed quantities MFMM}
 \usage{
-mfmm.samples(
-  n,
-  mu,
-  theta,
-  v,
-  u = -v,
-  samples,
-  d = 1e-10,
-  lower = 0,
-  upper = 10000
-)
+mfmm.samples(n, mu, theta, v, u, samples, d = 1e-10, lower = 0, upper = 10000)
 }
 \arguments{
 \item{n}{sample size}
@@ -28,6 +18,12 @@ mfmm.samples(
 \item{u}{Tuning parameter}
 
 \item{samples}{matrix os samples}
+
+\item{d}{parameter to calculate the gradient}
+
+\item{lower}{lower to calculate the inverse of g}
+
+\item{upper}{upper to calculate the inverse og g}
 }
 \description{
 Observed quantities for the MFMM

@@ -4,16 +4,16 @@
 \alias{mfmm.theo}
 \title{Theoretical quantities MFMM}
 \usage{
-mfmm.theo(mu, theta, u, v)
+mfmm.theo(mu, theta, v, u, n = 100, prob = 0.97)
 }
 \arguments{
 \item{mu}{true value of mu}
 
 \item{theta}{true value of theta}
 
-\item{u}{Tuning parameter}
-
 \item{v}{Tuning parameter}
+
+\item{u}{Tuning parameter}
 }
 \description{
 Theoretical quantities for the mfmm

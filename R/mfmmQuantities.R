@@ -6,7 +6,7 @@
 #' @param v Tuning parameter
 #' @param u Tuning parameter
 #' @export
-mfmm.theo <- function(mu, theta, u, v) {
+mfmm.theo <- function(mu, theta, v, u , n = 100, prob = 0.97) {
   ev <- (mu * theta)^v * (theta + 1) * beta(v + 1, theta + 1 - v)
   eu <- (mu * theta)^u * (theta + 1) * beta(u + 1, theta + 1 - u)
   sig.v <- (mu * theta)^(2 * v) * (theta + 1) * (beta(2 * v + 1, theta + 1 - 2 * v) - (theta + 1) * (beta(v + 1, theta + 1 - v)^2))
@@ -18,9 +18,17 @@ mfmm.theo <- function(mu, theta, u, v) {
   gamma2 <- p1 - 2 * p2 + p3
   Esp.Tn <- (ev^u) / (eu^v)
 
+  # probability to reject the sample
+  lim.inf <- limits.g(v,u)[[1]]
+  lim.sup <- limits.g(v,u)[[2]]
+  x.lim <- ceiling((qnorm(prob)*sqrt(gamma2)/(lim.sup-Esp.Tn))^2)
+  prob.nr <- pnorm(sqrt(n)*(lim.sup-Esp.Tn)/sqrt(gamma2))
+
   return(list(
     Esp.Tn = Esp.Tn,
-    gamma2 = gamma2
+    gamma2 = gamma2,
+    x.lim = x.lim,
+    prob.nr = prob.nr
   ))
 }
 
@@ -36,9 +44,12 @@ mfmm.theo <- function(mu, theta, u, v) {
 #' @param v Tuning parameter
 #' @param u Tuning parameter
 #' @param samples matrix os samples
+#' @param d parameter to calculate the gradient
+#' @param lower lower to calculate the inverse of g
+#' @param upper upper to calculate the inverse og g
 #' @export
-mfmm.samples <- function(n, mu, theta, v, u = -v, samples, d = 1e-10, lower = 0, upper = 10000) {
-  theo <- mfmm.theo(mu, theta, u, v)
+mfmm.samples <- function(n, mu, theta, v, u, samples, d = 1e-10, lower = 0, upper = 10000) {
+  theo <- mfmm.theo(mu = mu, theta = theta, v = v, u = u, n = n)
   Esp.Tn <- theo$Esp.Tn
   gamma2 <- theo$gamma2
 
@@ -61,8 +72,11 @@ mfmm.samples <- function(n, mu, theta, v, u = -v, samples, d = 1e-10, lower = 0,
     samp.cond <- mu.uv[mu.uv < lim.inf & mu.uv > lim.sup]
   )
 
+  # Proportion of rejection
+  prop.rejec <- sum(ifelse(mu.uv > lim.sup, 1,0))/nrow(samples)
+
   # estimated theta based on selected sample
-  theta.hat <- sapply(samp.cond, g.theta.inv, v = v, u = u)
+  theta.hat <- sapply(samp.cond, g.inverse)
   # variance obtained by the delta method for the inverse of the function
   kappa2 <- gamma2 * (der.inv)^2
   # standardizing the estimated theta
@@ -81,6 +95,7 @@ mfmm.samples <- function(n, mu, theta, v, u = -v, samples, d = 1e-10, lower = 0,
   return(list(
     theta.hat = theta.hat, theta.hat.pad = theta.hat.pad,
     q.hat = q.hat, q.hat.pad = q.hat.pad,
-    kappa2 = kappa2, lim.sup = lim.sup
+    kappa2 = kappa2, lim.sup = lim.sup, mu.uv = mu.uv,
+    prop.rejec = prop.rejec
   ))
 }
