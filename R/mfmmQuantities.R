@@ -68,9 +68,18 @@ mfmm.samples <- function(n, mu, theta, v, u, samples, d = 1e-10, lower = 0, uppe
   mu.uv <- (rowMeans(samples^v)^u) / (rowMeans(samples^u)^v)
 
   # Select sample
-  ifelse(v > 0, samp.cond <- mu.uv[mu.uv > lim.inf & mu.uv < lim.sup],
-    samp.cond <- mu.uv[mu.uv < lim.inf & mu.uv > lim.sup]
-  )
+  # ifelse(v > 0, samp.cond <- mu.uv[mu.uv > lim.inf & mu.uv < lim.sup],
+  #   samp.cond <- mu.uv[mu.uv < lim.inf & mu.uv > lim.sup]
+  # )
+  if(v>0&u>0 | v<0&u<0 | v>0&u<0){
+    samp.cond <- mu.uv[mu.uv > lim.inf & mu.uv < lim.sup]
+  }
+
+  if(v<0&u>0){
+    samp.cond <- mu.uv[mu.uv > lim.inf & mu.uv < lim.sup]
+  }
+
+  #samp.cond <- mu.uv[mu.uv > lim.inf & mu.uv < lim.sup]
 
   # Proportion of rejection
   prop.rejec <- sum(ifelse(mu.uv > lim.sup, 1,0))/nrow(samples)
