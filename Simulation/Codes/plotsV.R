@@ -73,3 +73,20 @@ p.v4 <- ggplot(melt(df.v4,id.vars='x'), aes(x,value,colour=variable))+
 
 p.v4
 
+
+
+#
+
+v <- c(-0.1,-0.2, -0.3, -0.4, 0.1, 0.2, 0.3, 0.4)
+u <- c(-0.1,-0.2, -0.3, -0.4, 0.1, 0.2, 0.3, 0.4)
+x <- expand_grid(v, u) %>% filter(v!=u)
+theta <- c(0:100)
+df <- expand_grid(x, theta)
+
+df1 <- df %>% filter(v ==0.4&u==0.1)
+
+mapply(g.theta, v = df1$v, u = df1$u, theta = df1$theta)  %>% as.data.frame() %>%
+  `colnames<-`("y") %>% mutate(x = 1:n()) %>%
+  ggplot() + geom_line(aes(x = x, y = y)) +theme_bw()
+
+

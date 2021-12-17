@@ -71,12 +71,12 @@ mfmm.samples <- function(n, mu, theta, v, u, samples, d = 1e-10, lower = 0, uppe
   # ifelse(v > 0, samp.cond <- mu.uv[mu.uv > lim.inf & mu.uv < lim.sup],
   #   samp.cond <- mu.uv[mu.uv < lim.inf & mu.uv > lim.sup]
   # )
-  if(v>0&u>0 | v<0&u<0 | v>0&u<0){
+  if(v>0&u>0&v<u | v<0&u<0&v<u | v>0&u<0){
     samp.cond <- mu.uv[mu.uv > lim.inf & mu.uv < lim.sup]
   }
 
-  if(v<0&u>0){
-    samp.cond <- mu.uv[mu.uv > lim.inf & mu.uv < lim.sup]
+  if( v<0&u<0&v>u){
+    samp.cond <- mu.uv[mu.uv < lim.inf & mu.uv > lim.sup]
   }
 
   #samp.cond <- mu.uv[mu.uv > lim.inf & mu.uv < lim.sup]
