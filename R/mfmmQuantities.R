@@ -38,6 +38,7 @@ mfmm.theo <- function(mu, theta, v, u ,  prob = 0.97) {
 #' Observed quantities for the MFMM
 #'
 #' @import numDeriv
+#' @import GoFKernel
 #' @param n sample size
 #' @param mu true value of mu
 #' @param theta true value of theta
