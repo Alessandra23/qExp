@@ -1,4 +1,6 @@
 library(devtools)
+library(dplyr)
+library(tidyverse)
 install_github("Alessandra23/qExp")
 
 f.n.uv <- function(mu, theta, v, u, prob = 0.97) {

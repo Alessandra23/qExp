@@ -50,7 +50,7 @@ mfmm.theo <- function(mu, theta, v, u ,  prob = 0.97) {
 #' @param upper upper to calculate the inverse og g
 #' @export
 mfmm.samples <- function(n, mu, theta, v, u, samples, d = 1e-10, lower = 0, upper = 10000) {
-  theo <- mfmm.theo(mu = mu, theta = theta, v = v, u = u, n = n)
+  theo <- mfmm.theo(mu = mu, theta = theta, v = v, u = u)
   Esp.Tn <- theo$Esp.Tn
   gamma2 <- theo$gamma2
 
