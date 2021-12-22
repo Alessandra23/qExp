@@ -1,6 +1,7 @@
 #' points mfmm
 #' Plot points
 #' @import colorspace
+#' @import tidyverse
 #' @param  v tuning parameter
 #' @param u tuning parameter
 #' @param mfmm.est object obtained from mfmm.samples function

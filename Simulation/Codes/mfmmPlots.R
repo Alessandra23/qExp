@@ -3,10 +3,7 @@
 
 # theta is vector
 
-
 reject.mfmm(log(3), c(1 / 9, 1, 9))
-
-
 
 # -----
 

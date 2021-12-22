@@ -6,7 +6,7 @@
 #' @param v Tuning parameter
 #' @param u Tuning parameter
 #' @export
-mfmm.theo <- function(mu, theta, v, u , n = 100, prob = 0.97) {
+mfmm.theo <- function(mu, theta, v, u ,  prob = 0.97) {
   ev <- (mu * theta)^v * (theta + 1) * beta(v + 1, theta + 1 - v)
   eu <- (mu * theta)^u * (theta + 1) * beta(u + 1, theta + 1 - u)
   sig.v <- (mu * theta)^(2 * v) * (theta + 1) * (beta(2 * v + 1, theta + 1 - 2 * v) - (theta + 1) * (beta(v + 1, theta + 1 - v)^2))
@@ -21,14 +21,14 @@ mfmm.theo <- function(mu, theta, v, u , n = 100, prob = 0.97) {
   # probability to reject the sample
   lim.inf <- limits.g(v,u)[[1]]
   lim.sup <- limits.g(v,u)[[2]]
-  x.lim <- ceiling((qnorm(prob)*sqrt(gamma2)/(lim.sup-Esp.Tn))^2)
-  prob.nr <- pnorm(sqrt(n)*(lim.sup-Esp.Tn)/sqrt(gamma2))
+  n.min <- ceiling((qnorm(prob)*sqrt(gamma2)/(lim.sup-Esp.Tn))^2)
+  prob.r <- pnorm(sqrt(n.min)*(lim.sup-Esp.Tn)/sqrt(gamma2))
 
   return(list(
     Esp.Tn = Esp.Tn,
     gamma2 = gamma2,
-    x.lim = x.lim,
-    prob.nr = prob.nr
+    n.min = n.min,
+    prob.r = prob.r
   ))
 }
 
