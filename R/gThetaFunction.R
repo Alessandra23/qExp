@@ -20,7 +20,7 @@ g.theta <- function(theta, v, u = -v) {
 #' @param v Tuning parameter
 #' @param theta Parameter \eqn{\theta} of qExponential function
 #'
-#' @importFrom  GoFKernel inverse
+#' @import  GoFKernel
 #' @export
 g.theta.inv <- function(value, lower = 0, upper = 10000, v, u = -v) {
   g <- function(theta) {
