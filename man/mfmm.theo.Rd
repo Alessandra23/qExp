@@ -4,7 +4,7 @@
 \alias{mfmm.theo}
 \title{Theoretical quantities MFMM}
 \usage{
-mfmm.theo(mu, theta, v, u, n = 100, prob = 0.97)
+mfmm.theo(mu, theta, v, u, prob = 0.97)
 }
 \arguments{
 \item{mu}{true value of mu}
