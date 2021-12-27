@@ -36,7 +36,6 @@ points.mfmm <- function(mfmm.est, v, u, xlimit = 100, colour = "black", size = 0
 #' @param mu paramter mu
 #' @param theta vector of values of theta
 #' @param nrow number of rows of facet grid
-#' @export
 reject.mfmm <- function(mu, theta, nrow = 1) {
   v <- c(0.1, 0.2, 0.3, 0.4)
   u <- c(0.1, 0.2, 0.3, 0.4)

@@ -22,3 +22,5 @@ df.n %>%
   group_by(theta) %>%
   slice(which.min(n))
 
+
+
