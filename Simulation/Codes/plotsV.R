@@ -77,16 +77,23 @@ p.v4
 
 #
 
-v <- c(-0.1,-0.2, -0.3, -0.4, 0.1, 0.2, 0.3, 0.4)
-u <- c(-0.1,-0.2, -0.3, -0.4, 0.1, 0.2, 0.3, 0.4)
-x <- expand_grid(v, u) %>% filter(v!=u)
+v <- c(seq(-0.4, -0.1, 0.1), seq(0.1, 0.5, 0.1))
+u <- c(seq(-0.4, -0.1, 0.1), seq(0.1, 0.5, 0.1))
+x <- expand_grid(v = v, u = u) %>% filter(v != u)
 theta <- c(0:100)
 df <- expand_grid(x, theta)
+df <- df %>% mutate(g = g.theta(theta, v, u),
+                    vu = paste0(v,", ", u))
 
-df1 <- df %>% filter(v ==0.4&u==0.1)
+df %>% filter(v>0&u>0&v<u) %>%
+  ggplot() + geom_line(aes(x = theta, y = g, linetype = vu)) + theme_bw()+
+  labs(x=expression(theta), y = bquote(paste("g(",theta,")")), linetype= "v,u")
 
-mapply(g.theta, v = df1$v, u = df1$u, theta = df1$theta)  %>% as.data.frame() %>%
-  `colnames<-`("y") %>% mutate(x = 1:n()) %>%
-  ggplot() + geom_line(aes(x = x, y = y)) +theme_bw()
+df %>% filter(v>0&u>0&v>u) %>%
+  ggplot() + geom_line(aes(x = theta, y = g, linetype = vu)) + theme_bw() +
+  labs(x=expression(theta), y = " ",  linetype= "v,u")
+
+
+
 
 

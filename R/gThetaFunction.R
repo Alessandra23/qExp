@@ -39,7 +39,8 @@ g.theta.inv <- function(value, lower = 0, upper = 10000, v, u = -v) {
 #' @export
 limits.g <- function(v,u){
   lim.inf <- ((gamma(v) * v)^u / ((gamma(u) * u)^v)) * ((-gamma(-v) * v)^u / ((-gamma(-u) * u)^v))
-  lim.sup <- 2^(-(u+v)/2) * exp(((log(2)+log(pi))*(u+v))/2)*pi^(-(u+v)/2) * (gamma(v+1)^u/gamma(u+1)^v)
+  # lim.sup <- 2^(-(u+v)/2) * exp(((log(2)+log(pi))*(u+v))/2)*pi^(-(u+v)/2) * (gamma(v+1)^u/gamma(u+1)^v)
+  lim.sup <-  (gamma(v+1)^u/gamma(u+1)^v)
   return(list(lim.inf = lim.inf,
               lim.sup = lim.sup))
 }
