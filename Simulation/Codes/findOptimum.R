@@ -1,5 +1,6 @@
 library(emdbook)
 library(ggplot2)
+library(optimx)
 
 f.vu <- function(par, mu = 1, theta = 1/9, prob = 0.97){
   v <- par[1]
@@ -77,6 +78,9 @@ plotContour(cc, xlim = seq(0,0.5,0.1), ylim = seq(0,0.5,0.1))
 #   scale_y_continuous(breaks = ylim)
 # p
 
+cc <- curve3d(f.vu(c(x,y), theta = 1), xlim = c(-0.5,0.5), ylim = c(-0.5, 0.5),
+              sys3d = "image", xlab = "v", ylab = "u")
+plotContour(cc, xlim = seq(-0.5,0.5,0.1), ylim = seq(-0.5,0.5,0.1))
 
 cc <- curve3d(f.vu(c(x,y), theta = 1), xlim = c(0,0.5), ylim = c(0, 0.5),
         sys3d = "image", xlab = "v", ylab = "u")
@@ -100,6 +104,9 @@ plotContour(cc, xlim = seq(0,0.5,0.1), ylim = seq(0,0.5,0.1))
 #   scale_y_continuous(breaks = ylim)
 # p
 
+cc <- curve3d(f.vu(c(x,y), theta = 9), xlim = c(-0.5,0.5), ylim = c(-0.5, 0.5),
+              sys3d = "image", xlab = "v", ylab = "u")
+plotContour(cc, xlim = seq(-0.5,0.5,0.1), ylim = seq(-0.5,0.5,0.1))
 
 cc <- curve3d(f.vu(c(x,y), theta = 9), xlim = c(0,0.5), ylim = c(0, 0.5),
         sys3d = "image", xlab = "v", ylab = "u")
@@ -224,12 +231,16 @@ oo
 c(round(oo$p1,2), round(oo$p2,2))
 f.vu(c(oo$p1, oo$p2), theta = 1)
 
-oo <- optimx(par = c(0.4, 0.45), fn = f.vu,  lower = c(0.0001, 0.0002), upper = c(0.49, 0.5),  mu = 1, theta = 9)
+oo <- optimx(par = c(0.45, 0.49), fn = f.vu,  lower = c(0.0001, 0.0002), upper = c(0.49, 0.5),  mu = 1, theta = 9)
 oo
 f.vu(c(oo$p1, oo$p2), theta = 9)
 
 f.vu(c(0.499, 0.5), theta = 9)
 
+oo = optim(par = c(0.4, 0.45), f.vu, theta = 9,
+           lower = c(0.1,0.2),
+           upper = c(0.49, 0.5), method="L-BFGS-B")
+oo
 
 
 

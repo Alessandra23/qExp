@@ -115,7 +115,8 @@ plotCompDens.mfmm <- function(data, n, theta, parameter = "theta", standard = TR
 
 
   if (parameter == "theta") {
-    names <- paste0('\u03B8'," = ",theta)
+    names <- paste0('\u03B8'," = ", theta)
+    #names <- paste0(expression(theta)," = ", theta)
   } else {
     vTheta <-  unique(data$theta)
     q <- sapply(vTheta, function(x) {
@@ -153,7 +154,7 @@ plotCompDens.mfmm <- function(data, n, theta, parameter = "theta", standard = TR
       stat_function(fun = dnorm, n = 1000, args = list(mean = 0, sd = 1), aes(colour = "Normal", linetype = "Normal"), size = 0.8) +
       geom_density(aes(x = value, colour = factor(n), linetype = factor(n)), size = 0.8) +
       xlim(c(-5, 5)) +
-      theme_bw() +
+      theme_classic(base_size = 20) +
       facet_wrap(~theta, labeller =  as_labeller(custLab)) +
       scale_linetype_manual(breaks = rev(nn), values = rev(1:length(nn))) +
       scale_color_manual(breaks = rev(nn), values = rev(yy)) +
@@ -161,8 +162,8 @@ plotCompDens.mfmm <- function(data, n, theta, parameter = "theta", standard = TR
   } else{
     p <- data %>% ggplot() +
       geom_density(aes(x = value, colour = factor(n), linetype = factor(n)), size = 0.8) +
-      xlim(c(-5, 5)) +
-      theme_bw() +
+      xlim(c(0, 10)) +
+      theme_classic(base_size = 20) +
       facet_wrap(~theta, labeller =  as_labeller(custLab)) +
       scale_linetype_manual(breaks = rev(n), values = rev(1:length(n))) +
       scale_color_manual(breaks = rev(n), values = rev(yy)) +

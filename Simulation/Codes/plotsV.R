@@ -1,6 +1,7 @@
 library(gridExtra)
 library(reshape2)
 library(ggplot2)
+library(tidyverse)
 theme_set(theme_bw())
 lty <- c("11", "18", "1f", "81", "88", "8f", "f1", "f8", "ff")
 
@@ -86,11 +87,11 @@ df <- df %>% mutate(g = g.theta(theta, v, u),
                     vu = paste0(v,", ", u))
 
 df %>% filter(v>0&u>0&v<u) %>%
-  ggplot() + geom_line(aes(x = theta, y = g, linetype = vu)) + theme_bw()+
+  ggplot() + geom_line(aes(x = theta, y = g, linetype = vu)) + theme_classic(base_size = 20)+
   labs(x=expression(theta), y = bquote(paste("g(",theta,")")), linetype= "v,u")
 
 df %>% filter(v>0&u>0&v>u) %>%
-  ggplot() + geom_line(aes(x = theta, y = g, linetype = vu)) + theme_bw() +
+  ggplot() + geom_line(aes(x = theta, y = g, linetype = vu)) + theme_classic(base_size = 20) +
   labs(x=expression(theta), y = " ",  linetype= "v,u")
 
 
