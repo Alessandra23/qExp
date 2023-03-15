@@ -11,15 +11,15 @@ library(qExponential)
 
 
 N <- 10000
-n <- c(4179, 9987, 25000)
-mu <- log(3)
-theta <- 9
+n <- c(20, 30, 50, 100, 500,1000)
+mu <- c(1/10, log(3), 10)
+theta <- c(1/9, 1, 9)
 
 
-N <- 50
-n <- 10
-mu <- log(3)
-theta <- 9
+# N <- 50
+# n <- 10
+# mu <- log(3)
+# theta <- 9
 
 allcomb <- expand.grid(N = N,
                        n = n,
@@ -28,7 +28,7 @@ allcomb <- expand.grid(N = N,
 
 
 ncomb <- nrow(allcomb)
-seed  <- 4
+seed  <- 022
 
 for (i in 1:ncomb) {
   set.seed(seed)
@@ -40,14 +40,13 @@ for (i in 1:ncomb) {
 
   data <- qexp.samples(N = N,n = n, theta = theta, mu = mu)
 
-  filename <- paste('N', N,
-                    'n', n,
+  filename <- paste('n', n,
                     'mu', round(mu,2),
                     'theta', round(theta,2),
                     sep='')
 
-  data_filename <- paste(filename, '_data.RData', sep='')
-  save(data, file = paste(save_file, data_filename, sep=''))
+  data_filename <- paste('Simulation/Data/', filename, '_data.RData', sep='')
+  save(data, file = data_filename)
 
 }
 

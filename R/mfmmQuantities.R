@@ -6,7 +6,7 @@
 #' @param v Tuning parameter
 #' @param u Tuning parameter
 #' @export
-mfmm.theo <- function(mu, theta, v, u ,  prob = 0.97) {
+mfmmTheo <- function(mu, theta, v, u ,  prob = 0.97, n = 100, d = 1e-10,  lower = 0, upper = 10000) {
   ev <- (mu * theta)^v * (theta + 1) * beta(v + 1, theta + 1 - v)
   eu <- (mu * theta)^u * (theta + 1) * beta(u + 1, theta + 1 - u)
   sig.v <- (mu * theta)^(2 * v) * (theta + 1) * (beta(2 * v + 1, theta + 1 - 2 * v) - (theta + 1) * (beta(v + 1, theta + 1 - v)^2))
@@ -23,12 +23,26 @@ mfmm.theo <- function(mu, theta, v, u ,  prob = 0.97) {
   lim.sup <- limits.g(v,u)[[2]]
   n.min <- ceiling((qnorm(prob)*sqrt(gamma2)/(lim.sup-Esp.Tn))^2)
   prob.r <- pnorm(sqrt(n.min)*(lim.sup-Esp.Tn)/sqrt(gamma2))
+  prob.n <- pnorm(sqrt(n)*(lim.sup-Esp.Tn)/sqrt(gamma2))
+
+
+  g <- function(theta) {
+    g.theta(theta, v = v, u = u)
+  }
+  g.inverse <- inverse(g, lower = lower, upper = upper)
+
+  inv.esp <- g.inverse(Esp.Tn)
+  der.inv <- numDeriv::grad(func = g.inverse, x = Esp.Tn, method.args = list(eps = 1e-12, d = d, r = 6))
+  kappa2 <- gamma2 * (der.inv)^2
 
   return(list(
     Esp.Tn = Esp.Tn,
     gamma2 = gamma2,
     n.min = n.min,
-    prob.r = prob.r
+    prob.r = prob.r,
+    prob.n = prob.n,
+    der.inv = der.inv,
+    kappa2 = kappa2
   ))
 }
 
@@ -49,8 +63,8 @@ mfmm.theo <- function(mu, theta, v, u ,  prob = 0.97) {
 #' @param lower lower to calculate the inverse of g
 #' @param upper upper to calculate the inverse og g
 #' @export
-mfmm.samples <- function(n, mu, theta, v, u, samples, d = 1e-10, lower = 0, upper = 10000) {
-  theo <- mfmm.theo(mu = mu, theta = theta, v = v, u = u)
+mfmmSamples <- function(n, mu, theta, v, u, samples, d = 1e-10, lower = 0, upper = 10000) {
+  theo <- mfmmTheo(mu = mu, theta = theta, v = v, u = u)
   Esp.Tn <- theo$Esp.Tn
   gamma2 <- theo$gamma2
   lim.inf <- limits.g(v,u)[[1]]

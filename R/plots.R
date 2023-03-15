@@ -37,8 +37,8 @@ points.mfmm <- function(mfmm.est, v, u, xlimit = 100, colour = "black", size = 0
 #' @param theta vector of values of theta
 #' @param nrow number of rows of facet grid
 reject.mfmm <- function(mu, theta, nrow = 1) {
-  v <- c(0.1, 0.2, 0.3, 0.4, 0.5)
-  u <- c(0.1, 0.2, 0.3, 0.4, 0.5)
+  v <- c(0.1, 0.2, 0.3, 0.4)
+  u <- c(0.1, 0.2, 0.3, 0.4)
   x <- expand_grid(v = v, u = u)
   x <- x %>% filter(v < u)
   # y <- -v
@@ -65,7 +65,7 @@ reject.mfmm <- function(mu, theta, nrow = 1) {
   probs <- mapply(mfmm.theo,
                   theta = v.n.theta$theta, mu = v.n.theta$mu,
                   v = v.n.theta$v, u = v.n.theta$u, n = v.n.theta$n
-  )[4, ]
+  )[5,]
 
 
   df <- cbind(v.n.theta, probs = unlist(probs))
@@ -84,9 +84,9 @@ reject.mfmm <- function(mu, theta, nrow = 1) {
   p <- df %>%
     group_by(theta) %>%
     ggplot() +
-    geom_line(aes(x = n, y = probs, colour = factor(uv), linetype = factor(uv)), size = 0.8) +
+    geom_line(aes(x = n, y = probs, colour = factor(uv), linetype = factor(uv)), linewidth = 0.8) +
     geom_hline(yintercept = 0.97, linetype = 5, size = 0.5) +
-    theme_bw() +
+    theme_classic(base_size = 16) +
     facet_wrap(~theta,
                scales = "free_x", nrow = nrow,
                labeller = labeller(theta = as_labeller(theta.names, label_parsed))

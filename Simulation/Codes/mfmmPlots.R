@@ -2,8 +2,9 @@
 
 
 # theta is vector
+library(tidyr)
 
-reject.mfmm(log(3), c(1 / 9, 1, 9))
+reject.mfmm(mu = log(3), theta = c(1 / 9, 1, 9))
 
 # -----
 
@@ -22,7 +23,7 @@ x <- data.frame(
   theta = rep(c(1/9, 1, 9), 2), uv = rep(c(1, 2, 3), 2), v = c(rep(c(0.07, 0.22, 0.49), 2)),
   u = rep(c(0.15, 0.33, 0.5), 2), n = c(48, 78, 817, rep(5000, 3))
 )
-x <- x %>% mutate(
+x <- x  |>  mutate(
   mu = mu,
   N = N,
   id = 1:n()
@@ -42,13 +43,13 @@ for (i in 1:nrow(x)) {
 
 theta.hat.st <- lapply(get.mfmm.est, function(y) {
   y$theta.hat.pad
-}) %>% melt()
+}) |> melt()
 
 colnames(theta.hat.st) <- c("value", "id")
 
 q.hat.st <- lapply(get.mfmm.est, function(y) {
   y$q.hat.pad
-}) %>% melt()
+}) |> melt()
 colnames(q.hat.st) <- c("value", "id")
 
 theta.hat.st <- merge(x, theta.hat.st)
@@ -78,13 +79,13 @@ plotCompDens.mfmm(data = q.hat.st, n = n, theta = theta, parameter = "q", standa
 
 theta.hat <- lapply(get.mfmm.est, function(y) {
   y$theta.hat
-}) %>% melt()
+}) |> melt()
 
 colnames(theta.hat) <- c("value", "id")
 
 q.hat <- lapply(get.mfmm.est, function(y) {
   y$q.hat
-}) %>% melt()
+}) |> melt()
 colnames(q.hat) <- c("value", "id")
 
 theta.hat <- merge(x, theta.hat)
