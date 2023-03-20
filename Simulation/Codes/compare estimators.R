@@ -456,19 +456,12 @@ mle <- function(dat){
 
 times <- microbenchmark::microbenchmark("MFMM" = {mfmm(dat = data)},
                                "MLE" = {mle(dat = data)},
-                               times = 10000,
+                               times = 1000,
                                unit = 'seconds')
 
 times |> autoplot() + theme_classic()
 
-times <- rbenchmark::benchmark("MFMM" = {mfmm(dat = data)},
-                      "MLE" = {mle(dat = data)},
-                      replications = 2,
-                      columns = c("test", "elapsed", "relative", "user.self", "sys.self"))
 
-times
-
-library(xtable)
-print(xtable(times, type = "latex"), file = "Simulation/Plots/times.tex")
+#print(xtable::xtable(times, type = "latex"), file = "Simulation/Plots/times.tex")
 
 
