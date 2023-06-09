@@ -22,11 +22,12 @@ f.vu <- function(par, mu = 1, theta = 1/9, prob = 0.97){
 }
 
 
-plotContour <- function(contour, xlim, ylim){
+
+plotContour <- function(contour, xlim, ylim, type = 2){
   x <- contour$x
   y <- contour$y
   z <- as.vector(contour$z)
-  df <- tibble(expand_grid(x,y), z)
+  df <- tibble::tibble(tidyr::expand_grid(x,y), z)
   #yy <- colorspace::sequential_hcl(palette = "Light Grays", n = n)
 
   # p <- ggplot(df, aes(x, y, z = z))+ geom_contour_filled(bins = n) +
@@ -35,100 +36,111 @@ plotContour <- function(contour, xlim, ylim){
   #   scale_x_continuous(breaks = xlim)+
   #   scale_y_continuous(breaks = ylim)
 
-  rng = range(z[!is.na(z)& z!=Inf])
+  #rng = range(z[!is.na(z)& z!=Inf])
 
-  p <- ggplot(df, aes(x, y, fill= z)) +
-    geom_tile() +
-    scale_fill_gradient(low = "grey92",
-                        high = "black",
-                        na.value = "white") +
-    labs(x = "v", y = "u", fill = "n") +
-    theme_classic(base_size = 20) +
-    #theme(legend.position = "none")+
-    scale_x_continuous(breaks = xlim) +
-    scale_y_continuous(breaks = ylim)
+  if(type == 1){
+    p <- ggplot(df, aes(x, y, fill= z)) +
+      geom_tile() +
+      scale_fill_gradient(low = "grey92",
+                          high = "black",
+                          na.value = "white",
+                          limits = c(1,7500000)) +
+      # scale_fill_gradientn(na.value = "white",
+      #                      limits = c(1,7500000),
+      #                      colors = rev(colorspace::sequential_hcl(palette = 'light grays', n = 100)),
+      #                      breaks = c(1, 1875001, 3750000, 5625000, 7500000)) +
+      labs(x = "v", y = "u", fill = "n") +
+      theme_classic(base_size = 16) +
+      #theme(legend.position = "none")+
+      scale_x_continuous(breaks = xlim) +
+      scale_y_continuous(breaks = ylim)
+  }
+
+  if(type == 2){
+    p <- ggplot(df, aes(x, y, fill= z)) +
+      geom_tile() +
+      scale_fill_gradient(low = "grey92",
+                          high = "black",
+                          na.value = "white") +
+      # scale_fill_gradientn(na.value = "white",
+      #                      limits = c(1,7500000),
+      #                      colors = rev(colorspace::sequential_hcl(palette = 'light grays', n = 100)),
+      #                      breaks = c(1, 1875001, 3750000, 5625000, 7500000)) +
+      labs(x = "v", y = "u", fill = "n") +
+      theme_classic(base_size = 16) +
+      #theme(legend.position = "none")+
+      scale_x_continuous(breaks = xlim) +
+      scale_y_continuous(breaks = ylim)
+  }
 
 
   print(p)
 }
 
 
+# theta = 1/9
 cc <- curve3d(f.vu(c(x,y), theta = 1/9), xlim = c(-0.5,0.5), ylim = c(-0.5, 0.5),
               sys3d = "image", xlab = "v", ylab = "u")
 plotContour(cc, xlim = seq(-0.5,0.5,0.1), ylim = seq(-0.5,0.5,0.1))
 
-cc <- curve3d(f.vu(c(x,y), theta = 1/9), xlim = c(0,0.5), ylim = c(0, 0.5),
-              sys3d = "image", xlab = "v", ylab = "u")
-plotContour(cc, xlim = seq(0,0.5,0.1), ylim = seq(0,0.5,0.1))
+cc_1_zoom <- curve3d(f.vu(c(x,y), theta = 1/9), xlim = c(0,0.5), ylim = c(0, 0.5),
+                     sys3d = "image", xlab = "v", ylab = "u")
+plotContour(cc_1_zoom, xlim = seq(0,0.5,0.1), ylim = seq(0,0.5,0.1))
 
 
-# contour <- cc
-#
-# x <- contour$x
-# y <- contour$y
-# z <- as.vector(contour$z)
-# df <- tibble(expand_grid(x,y), z)
-# yy <- colorspace::sequential_hcl(palette = "Light Grays", n = 6)
-#
-# p <- ggplot(df, aes(x, y, z = z))+ geom_contour(colour = "black", bins = 100)  +
-#  # geom_contour_filled()+
-#   scale_fill_manual(values = rev(yy)) +theme_bw(base_size = 15) +
-#   labs(x = "v", y = "u", fill = "n") +
-#   scale_x_continuous(breaks = xlim)+
-#   scale_y_continuous(breaks = ylim)
-# p
-
+# theta = 1
 cc <- curve3d(f.vu(c(x,y), theta = 1), xlim = c(-0.5,0.5), ylim = c(-0.5, 0.5),
               sys3d = "image", xlab = "v", ylab = "u")
 plotContour(cc, xlim = seq(-0.5,0.5,0.1), ylim = seq(-0.5,0.5,0.1))
 
-cc <- curve3d(f.vu(c(x,y), theta = 1), xlim = c(0,0.5), ylim = c(0, 0.5),
-        sys3d = "image", xlab = "v", ylab = "u")
+cc_2_zoom <- curve3d(f.vu(c(x,y), theta = 1), xlim = c(0,0.5), ylim = c(0, 0.5),
+                     sys3d = "image", xlab = "v", ylab = "u")
 
-plotContour(cc, xlim = seq(0,0.5,0.1), ylim = seq(0,0.5,0.1))
+plotContour(cc_2_zoom, xlim = seq(0,0.5,0.1), ylim = seq(0,0.5,0.1))
 
 
-# contour <- cc
-#
-# x <- contour$x
-# y <- contour$y
-# z <- as.vector(contour$z)
-# df <- tibble(expand_grid(x,y), z)
-# yy <- colorspace::sequential_hcl(palette = "Light Grays", n = 6)
-#
-# p <- ggplot(df, aes(x, y, z = z))+ geom_contour(colour = "black", bins = 12)  +
-#   # geom_contour_filled()+
-#   scale_fill_manual(values = rev(yy)) +theme_bw(base_size = 15) +
-#   labs(x = "v", y = "u", fill = "n") +
-#   scale_x_continuous(breaks = xlim)+
-#   scale_y_continuous(breaks = ylim)
-# p
-
+# theta = 9
 cc <- curve3d(f.vu(c(x,y), theta = 9), xlim = c(-0.5,0.5), ylim = c(-0.5, 0.5),
               sys3d = "image", xlab = "v", ylab = "u")
 plotContour(cc, xlim = seq(-0.5,0.5,0.1), ylim = seq(-0.5,0.5,0.1))
 
-cc <- curve3d(f.vu(c(x,y), theta = 9), xlim = c(0,0.5), ylim = c(0, 0.5),
-        sys3d = "image", xlab = "v", ylab = "u")
+cc_3_zoom <- curve3d(f.vu(c(x,y), theta = 9), xlim = c(0,0.5), ylim = c(0, 0.5),
+                     sys3d = "image", xlab = "v", ylab = "u")
+plotContour(cc_3_zoom, xlim = seq(0,0.5,0.1), ylim = seq(0,0.5,0.1))
 
-plotContour(cc, xlim = seq(0,0.5,0.1), ylim = seq(0,0.5,0.1))
 
 
-# contour <- cc
-#
-# x <- contour$x
-# y <- contour$y
-# z <- as.vector(contour$z)
-# df <- tibble(expand_grid(x,y), z)
-# yy <- colorspace::sequential_hcl(palette = "Light Grays", n = 6)
-#
-# p <- ggplot(df, aes(x, y, z = z))+ geom_contour(colour = "black", bins = 6)  +
-#   # geom_contour_filled()+
-#   scale_fill_manual(values = rev(yy)) +theme_bw(base_size = 15) +
-#   labs(x = "v", y = "u", fill = "n") +
-#   scale_x_continuous(breaks = xlim)+
-#   scale_y_continuous(breaks = ylim)
-# p
+## just the entire range
+
+# theta = 1/9
+cc_1 <- curve3d(f.vu(c(x,y), theta = 1/9), xlim = c(-0.5,0.5), ylim = c(-0.5, 0.5),
+                sys3d = "image", xlab = "v", ylab = "u")
+plotContour(cc_1, xlim = seq(-0.5,0.5,0.1), ylim = seq(-0.5,0.5,0.1))
+
+# theta = 1
+cc_2 <- curve3d(f.vu(c(x,y), theta = 1), xlim = c(-0.5,0.5), ylim = c(-0.5, 0.5),
+                sys3d = "image", xlab = "v", ylab = "u")
+plotContour(cc_2, xlim = seq(-0.5,0.5,0.1), ylim = seq(-0.5,0.5,0.1))
+
+
+# theta = 9
+cc_3 <- curve3d(f.vu(c(x,y), theta = 9), xlim = c(-0.5,0.5), ylim = c(-0.5, 0.5),
+                sys3d = "image", xlab = "v", ylab = "u")
+plotContour(cc_3, xlim = seq(-0.5,0.5,0.1), ylim = seq(-0.5,0.5,0.1))
+
+library(patchwork)
+
+plotContour(cc_1, xlim = seq(-0.5,0.5,0.1), ylim = seq(-0.5,0.5,0.1), type = 1) +
+  plotContour(cc_2, xlim = seq(-0.5,0.5,0.1), ylim = seq(-0.5,0.5,0.1), type = 1) +
+  plotContour(cc_3, xlim = seq(-0.5,0.5,0.1), ylim = seq(-0.5,0.5,0.1), type = 1) +
+
+plotContour(cc_1, xlim = seq(-0.5,0.5,0.1), ylim = seq(-0.5,0.5,0.1), type = 2) +
+  plotContour(cc_2, xlim = seq(-0.5,0.5,0.1), ylim = seq(-0.5,0.5,0.1), type = 2) +
+  plotContour(cc_3, xlim = seq(-0.5,0.5,0.1), ylim = seq(-0.5,0.5,0.1), type = 2) +
+
+plotContour(cc_1_zoom, xlim = seq(0,0.5,0.1), ylim = seq(0,0.5,0.1), type = 2) +
+  plotContour(cc_2_zoom, xlim = seq(0,0.5,0.1), ylim = seq(0,0.5,0.1), type = 2) +
+  plotContour(cc_3_zoom, xlim = seq(0,0.5,0.1), ylim = seq(0,0.5,0.1), type = 2)
 
 
 
@@ -147,7 +159,7 @@ cc
 # Fazer o gráfico para isso:
 
 # Todo o intervalo
-par(mfrow = c(1,3))
+#par(mfrow = c(1,3))
 cc <- curve3d(f.vu(c(x,y), theta = 1/9), xlim = c(-0.5,0.5), ylim = c(-0.5, 0.5),
               sys3d = "image", xlab = "v", ylab = "u")
 plotContour(cc, xlim = c(-0.5,0.5), ylim = c(-0.5, 0.5))
@@ -212,8 +224,6 @@ oo = optim(par = c(0.3, 0.4), f.vu, theta = 1/9,
 
 oo
 
-
-
 oo = optim(par = c(0.3, 0.4), f.vu, theta = 1/9,
            lower = c(0,0.001),
            upper = c(0.49, 0.5), method="L-BFGS-B")
@@ -221,6 +231,7 @@ oo = optim(par = c(0.3, 0.4), f.vu, theta = 1/9,
 oo
 
 
+## optimx
 oo <- optimx(par = c(0.1, 0.5), fn = f.vu,  lower = c(0.0001, 0.0002), upper = c(0.49, 0.5),  mu = 1, theta = 1/9)
 oo
 c(round(oo$p1,2), round(oo$p2,2))
@@ -242,5 +253,82 @@ oo = optim(par = c(0.4, 0.45), f.vu, theta = 9,
            upper = c(0.49, 0.5), method="L-BFGS-B")
 oo
 
+
+
+
+
+# New function for the plots
+
+
+pf <- function(df, zval, pal, lims){
+  ggplot(df, aes(x = x, y = y, fill = zval)) +
+    geom_tile() +
+    scale_fill_gradientn(colors = pal,
+                         limits = lims,
+                         name = 'n',
+                         oob = scales::squish,
+                         na.value = "white",
+                         guide = guide_colorbar(
+                           order = 2,
+                           frame.colour = "white",
+                           ticks.colour = "white"
+                         )
+    ) +
+    labs(x = "v", y = "u") +
+    theme_classic(base_size = 16) +
+    #theme(legend.position = "none")+
+    scale_x_continuous(breaks = seq(-0.5,0.5, 0.1)) +
+    scale_y_continuous(breaks = seq(-0.5,0.5, 0.1))
+}
+
+
+
+cc_1 <- curve3d(f.vu(c(x,y), theta = 1/9), xlim = c(-0.5,0.5), ylim = c(-0.5, 0.5),
+                sys3d = "image", xlab = "v", ylab = "u")
+x <- cc_1$x
+y <- cc_1$y
+z <- as.vector(cc_1$z)
+df <- tibble::tibble(tidyr::expand_grid(x,y), z)
+range(z[!is.na(df$z)& z!=Inf])
+
+# set colour palette
+pal <- colorRampPalette(c("grey90","black"))
+pal <- pal(100)
+
+p1 <- pf(df = df, zval = df$z, pal = pal, lims = c(0,2500))
+p1
+
+cc_1 <- curve3d(f.vu(c(x,y), theta = 1), xlim = c(-0.5,0.5), ylim = c(-0.5, 0.5),
+                sys3d = "image", xlab = "v", ylab = "u")
+x <- cc_1$x
+y <- cc_1$y
+z <- as.vector(cc_1$z)
+df <- tibble::tibble(tidyr::expand_grid(x,y), z)
+range(z[!is.na(df$z)& z!=Inf])
+
+# set colour palette
+pal <- colorRampPalette(c("grey90","black"))
+pal <- pal(100)
+
+p2 <- pf(df = df, zval = df$z, pal = pal, lims = c(0,2500))
+p2
+
+
+cc_1 <- curve3d(f.vu(c(x,y), theta = 9), xlim = c(-0.5,0.5), ylim = c(-0.5, 0.5),
+                sys3d = "image", xlab = "v", ylab = "u")
+x <- cc_1$x
+y <- cc_1$y
+z <- as.vector(cc_1$z)
+df <- tibble::tibble(tidyr::expand_grid(x,y), z)
+range(z[!is.na(df$z)& z!=Inf])
+
+# set colour palette
+pal <- colorRampPalette(c("grey90","black"))
+pal <- pal(100)
+
+p3 <- pf(df = df, zval = df$z, pal = pal, lims = c(0,2500))
+p3
+
+p1+p2+p3
 
 
