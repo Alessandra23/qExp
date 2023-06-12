@@ -1,8 +1,9 @@
 # Plot g(theta) and the values of the statistic Tn = T_v^u/T_u^v
 
-
+library(qExp)
 # theta is vector
 library(tidyr)
+library(dplyr)
 
 reject.mfmm(mu = log(3), theta = c(1 / 9, 1, 9))
 

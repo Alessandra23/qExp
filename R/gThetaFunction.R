@@ -26,7 +26,7 @@ g.theta.inv <- function(value, lower = 0, upper = 10000, v, u = -v) {
   g <- function(theta) {
     (theta + 1)^(u - v) * beta(v + 1, theta - v + 1)^u * beta(u + 1, theta - u + 1)^(-v)
   }
-  g.inverse <- inverse(g, lower = lower, upper = upper)
+  g.inverse <- GoFKernel::inverse(g, lower = lower, upper = upper)
   inverse.theta <- g.inverse(value)
   return(inverse.theta)
 }

@@ -29,7 +29,7 @@ mfmmTheo <- function(mu, theta, v, u ,  prob = 0.97, n = 100, d = 1e-10,  lower 
   g <- function(theta) {
     g.theta(theta, v = v, u = u)
   }
-  g.inverse <- inverse(g, lower = lower, upper = upper)
+  g.inverse <- GoFKernel::inverse(g, lower = lower, upper = upper)
 
   inv.esp <- g.inverse(Esp.Tn)
   der.inv <- numDeriv::grad(func = g.inverse, x = Esp.Tn, method.args = list(eps = 1e-12, d = d, r = 6))

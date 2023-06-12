@@ -47,7 +47,7 @@ reject.mfmm <- function(mu, theta, nrow = 1) {
 
 
   # create the limits of the sequences
-  lim <- sapply(theta, mfmm.theo, mu = mu, v = v, u = -v)[3, ]
+  lim <- sapply(theta, mfmmTheo, mu = mu, v = v, u = -v)[3, ]
   lim <- lapply(lim, function(x) {
     ll <- ifelse(x < 300, 300, x)
     return(max(ll))
@@ -62,7 +62,7 @@ reject.mfmm <- function(mu, theta, nrow = 1) {
 
   v.n.theta <- expand_grid(x, seqs) %>% mutate(mu = mu)
 
-  probs <- mapply(mfmm.theo,
+  probs <- mapply(mfmmTheo,
                   theta = v.n.theta$theta, mu = v.n.theta$mu,
                   v = v.n.theta$v, u = v.n.theta$u, n = v.n.theta$n
   )[5,]
