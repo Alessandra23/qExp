@@ -172,3 +172,82 @@ plotCompDens.mfmm <- function(data, n, theta, parameter = "theta", standard = TR
 
   return(p)
 }
+
+#' Plot contour
+#'
+#'
+#' @export
+plotContour <- function(contour, xlim, ylim, type = 1){
+  x <- contour$x
+  y <- contour$y
+  z <- as.vector(contour$z)
+  df <- tibble::tibble(tidyr::expand_grid(x,y), z)
+  #yy <- colorspace::sequential_hcl(palette = "Light Grays", n = n)
+
+  # p <- ggplot(df, aes(x, y, z = z))+ geom_contour_filled(bins = n) +
+  #   scale_fill_manual(values = rev(yy)) +theme_classic(base_size = 15) +
+  #   labs(x = "v", y = "u", fill = "n") +
+  #   scale_x_continuous(breaks = xlim)+
+  #   scale_y_continuous(breaks = ylim)
+
+  #rng = range(z[!is.na(z)& z!=Inf])
+
+  pal <- colorRampPalette(c("grey90","black"))
+  pal <- pal(100)
+
+  # if(type == 1){
+  #   p <- ggplot(df, aes(x, y, fill= z)) +
+  #     geom_tile() +
+  #     scale_fill_gradient(low = "grey90",
+  #                         high = "black",
+  #                         na.value = "white",
+  #                         limits = c(1,7500000)) +
+  #     # scale_fill_gradientn(na.value = "white",
+  #     #                      limits = c(1,7500000),
+  #     #                      colors = rev(colorspace::sequential_hcl(palette = 'light grays', n = 100)),
+  #     #                      breaks = c(1, 1875001, 3750000, 5625000, 7500000)) +
+  #     labs(x = "v", y = "u", fill = "n") +
+  #     theme_classic(base_size = 16) +
+  #     #theme(legend.position = "none")+
+  #     scale_x_continuous(breaks = xlim) +
+  #     scale_y_continuous(breaks = ylim)
+  # }
+
+  if(type == 1){
+    p <- ggplot(df, aes(x, y, fill= z)) +
+      geom_tile() +
+      scale_fill_gradient(low = "grey90",
+                          high = "black",
+                          na.value = "white") +
+      labs(x = "v", y = "u", fill = "n") +
+      theme_classic(base_size = 16) +
+      #theme(legend.position = "none")+
+      scale_x_continuous(breaks = xlim) +
+      scale_y_continuous(breaks = ylim)
+  }
+
+  if(type == 2){
+    lims <- c(xlim, ylim)
+    p <-   ggplot(df, aes(x = x, y = y, fill = z)) +
+      geom_tile() +
+      scale_fill_gradientn(colors = pal,
+                           limits = lims,
+                           name = 'n',
+                           oob = scales::squish,
+                           na.value = "white",
+                           guide = guide_colorbar(
+                             order = 2,
+                             frame.colour = "white",
+                             ticks.colour = "white"
+                           )
+      ) +
+      labs(x = "v", y = "u") +
+      theme_classic(base_size = 16) +
+      #theme(legend.position = "none")+
+      scale_x_continuous(breaks = seq(-0.5,0.5, 0.1)) +
+      scale_y_continuous(breaks = seq(-0.5,0.5, 0.1))
+  }
+
+
+  print(p)
+}

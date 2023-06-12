@@ -44,3 +44,29 @@ limits.g <- function(v,u){
   return(list(lim.inf = lim.inf,
               lim.sup = lim.sup))
 }
+
+
+#'
+#'
+#'
+#' @export
+
+f.vu <- function(par, mu = 1, theta = 1/9, prob = 0.97){
+  v <- par[1]
+  u <- par[2]
+
+  ev <- (mu * theta)^v * (theta + 1) * beta(v + 1, theta + 1 - v)
+  eu <- (mu * theta)^u * (theta + 1) * beta(u + 1, theta + 1 - u)
+  sig.v <- (mu * theta)^(2 * v) * (theta + 1) * (beta(2 * v + 1, theta + 1 - 2 * v) - (theta + 1) * (beta(v + 1, theta + 1 - v)^2))
+  sig.u <- (mu * theta)^(2 * u) * (theta + 1) * (beta(2 * u + 1, theta + 1 - 2 * u) - (theta + 1) * (beta(u + 1, theta + 1 - u)^2))
+  sig.uv <- ((mu * theta)^(u + v)) * (theta + 1) * (beta(u + v + 1, theta + 1 - u - v) - (theta + 1) * beta(u + 1, theta + 1 - u) * beta(v + 1, theta + 1 - v))
+  p1 <- (u^2) * sig.v * ev^(2 * u - 2) * eu^(-2 * v)
+  p2 <- u * v * ev^(2 * u - 1) * eu^(-2 * v - 1) * sig.uv
+  p3 <- (v^2) * sig.u * ev^(2 * u) * eu^(-2 * v - 2)
+  gamma2 <- p1 - 2 * p2 + p3
+  Esp.Tn <- (ev^u) / (eu^v)
+  lim.sup <- (gamma(v+1)^u/gamma(u+1)^v)
+
+  return(ceiling((qnorm(prob)*sqrt(gamma2)/(lim.sup-Esp.Tn))^2))
+}
+
