@@ -1,5 +1,6 @@
 # Code to generate the paper results
 
+#devtools::install_github("Alessandra23/qExp")
 library(qExp)
 
 # Figure 1 ----------------------------------------------------------------
@@ -103,7 +104,7 @@ df %>% filter(v>0&u>0&v>u) %>%
 cc_1 <- curve3d(f.vu(c(x,y), theta = 1/9), xlim = c(-0.5,0.5), ylim = c(-0.5, 0.5),
                 sys3d = "image", xlab = "v", ylab = "u")
 # Fig 3(a)
-plotContour(contour = cc_1, xlim = 0, ylim = 2500, type = 3)
+plotContour(contour = cc_1, xlim = 0, ylim = 2500, type = 2)
 
 cc_1_zoom <- curve3d(f.vu(c(x,y), theta = 1/9), xlim = c(0,0.5), ylim = c(0, 0.5),
                      sys3d = "image", xlab = "v", ylab = "u")
@@ -115,7 +116,7 @@ plotContour(cc_1_zoom, xlim = seq(0,0.5,0.1), ylim = seq(0,0.5,0.1))
 cc_2 <- curve3d(f.vu(c(x,y), theta = 1), xlim = c(-0.5,0.5), ylim = c(-0.5, 0.5),
                 sys3d = "image", xlab = "v", ylab = "u")
 # Fig 3(b)
-plotContour(contour = cc_2, xlim = 0, ylim = 2500, type = 3)
+plotContour(contour = cc_2, xlim = 0, ylim = 2500, type = 2)
 
 cc_2_zoom <- curve3d(f.vu(c(x,y), theta = 1), xlim = c(0,0.5), ylim = c(0, 0.5),
                      sys3d = "image", xlab = "v", ylab = "u")
@@ -127,7 +128,7 @@ plotContour(cc_2_zoom, xlim = seq(0,0.5,0.1), ylim = seq(0,0.5,0.1))
 cc_3 <- curve3d(f.vu(c(x,y), theta = 9), xlim = c(-0.5,0.5), ylim = c(-0.5, 0.5),
                 sys3d = "image", xlab = "v", ylab = "u")
 # Fig 3(c)
-plotContour(contour = cc_3, xlim = 0, ylim = 2500, type = 3)
+plotContour(contour = cc_3, xlim = 0, ylim = 2500, type = 2)
 
 cc_3_zoom <- curve3d(f.vu(c(x,y), theta = 9), xlim = c(0,0.5), ylim = c(0, 0.5),
                      sys3d = "image", xlab = "v", ylab = "u")
@@ -135,23 +136,107 @@ cc_3_zoom <- curve3d(f.vu(c(x,y), theta = 9), xlim = c(0,0.5), ylim = c(0, 0.5),
 plotContour(cc_3_zoom, xlim = seq(0,0.5,0.1), ylim = seq(0,0.5,0.1))
 
 
-# Figure 4 ----------------------------------------------------------------
+# Figures 4, 5 and 16 ----------------------------------------------------------------
+
+# Generate the data
+mu <- log(3)
+N <- 10000
+x <- data.frame(
+  theta = rep(c(1/9, 1, 9), 2), uv = rep(c(1, 2, 3), 2), v = c(rep(c(0.07, 0.22, 0.49), 2)),
+  u = rep(c(0.15, 0.33, 0.5), 2), n = c(48, 78, 817, rep(5000, 3))
+)
+x <- x  |>  mutate(
+  mu = mu,
+  N = N,
+  id = 1:n()
+)
+#
+#create samples
+# set.seed(2022)
+# samples.mfmm <- mapply(qexp.samples, n = x$n, theta = x$theta, mu = x$mu, N = x$N)
+# save(samples.mfmm, file="data/samples.mfmm.RData")
+# mfmm.est <- list()
+# for (i in 1:nrow(x)) {
+#   mfmm.est[[i]] <- mfmmSamples(
+#     n = x$n[i], mu = x$mu[i], theta = x$theta[i],
+#     v = x$v[i], u = x$u[i], samples = samples.mfmm[[i]]
+#   )
+# }
+#save(mfmm.est, file="data/mfmm.est.RData")
+
+# load data
+data('mle.est')
+# Fig 4 (theta hat MFMM)
+theta.hat <- lapply(mfmm.est, function(y) {
+  y$theta.hat
+}) |> melt()
+colnames(theta.hat) <- c("value", "id")
+theta.hat <- merge(x, theta.hat)
+
+theta = c("1/9", "1", "9")
+n <- c("5000", "817", "78", "48")
+plotCompDens.mfmm(data = theta.hat, n = n, theta = theta, parameter = "theta", standard = FALSE)
 
 
+# Fig 5 (q hat MFMM standardized)
+q.hat.st <- lapply(mfmm.est, function(y) {
+  y$q.hat.pad
+}) |> melt()
+colnames(q.hat.st) <- c("value", "id")
+q.hat.st <- merge(x, q.hat.st)
 
-# Figure 5 ----------------------------------------------------------------
+theta = c("1/9", "1", "9")
+n <- c("5000", "817", "78", "48")
+plotCompDens.mfmm(data = q.hat.st, n = n, theta = theta, parameter = "q", standard = TRUE)
 
 
-# Figure 6 ----------------------------------------------------------------
+#Fig 16 (theta hat MFMM standardized)
+theta.hat.st <- lapply(mfmm.est, function(y) {
+  y$theta.hat.pad
+}) |> melt()
+colnames(theta.hat.st) <- c("value", "id")
+theta.hat.st <- merge(x, theta.hat.st)
+
+theta = c("1/9", "1", "9")
+n <- c("5000", "817", "78", "48")
+plotCompDens.mfmm(data = theta.hat.st, n = n, theta = theta, parameter = "theta", standard = TRUE)
+
+#Fig 17 (q hat MFMM)
+# q.hat <- lapply(mfmm.est, function(y) {
+#   y$q.hat
+# }) |> melt()
+# colnames(q.hat) <- c("value", "id")
+# q.hat <- merge(x, q.hat)
+#
+# theta = c("1/9", "1", "9")
+# n <- c("5000", "817", "78", "48")
+# plotCompDens.mfmm(data = q.hat, n = n, theta = theta, parameter = "q", standard = FALSE)
 
 
-# Figure 7 ----------------------------------------------------------------
+# Figure 6, 7, 8 and 9 ----------------------------------------------------------------
 
+# Generate the data
+N = 10000
+n <- c(20, 30, 50, 100, 500,1000)
+mu <- log(3)
+theta <- c(1/9, 1, 9)
+x.mle <- expand.grid(N = N,
+                       n = n,
+                       theta = theta)
+x.mle$mu <- rep(mu, nrow(x.mle))
 
-# Figure 8 ----------------------------------------------------------------
+# #create samples
+# set.seed(2022)
+# samples.mle <- mapply(qexp.samples, n = x.mle$n, theta = x.mle$theta, mu = x.mle$mu, N = x.mle$N)
+#
+# mle.est <- list()
+# for (i in 1:length(samples.mle)) {
+#   mle.est[[i]] <- mleSamples(samples.mle[[i]], mu = mu, theta = x.mle$theta[i])
+# }
+#save(mle.est, file="data/mle.est.RData")
 
-
-# Figure 9 ----------------------------------------------------------------
+# load data
+data('mle.est')
 
 
 # Figure 10 ---------------------------------------------------------------

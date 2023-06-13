@@ -30,7 +30,7 @@ for (i in 1:ncomb) {
   data_filename <- paste('~/Documents/GitHub/qExp/Simulation/Data/', filename, '_data.RData', sep='')
   load(data_filename)
 
-  model[[i]] <- mle.samples(data, mu, theta)
+  model[[i]] <- mleSamples(data, mu, theta)
 }
 
 # saveRDS(model, '~/Documents/GitHub/qExp/Simulation/Data/model.rds')

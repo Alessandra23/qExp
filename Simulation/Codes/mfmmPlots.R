@@ -32,10 +32,9 @@ x <- x  |>  mutate(
 #create samples
 set.seed(2022)
 samples <- mapply(qexp.samples, n = x$n, theta = x$theta, mu = x$mu, N = x$N)
-i=6
 get.mfmm.est <- list()
 for (i in 1:nrow(x)) {
-  get.mfmm.est[[i]] <- mfmm.samples(
+  get.mfmm.est[[i]] <- mfmmSamples(
     n = x$n[i], mu = x$mu[i], theta = x$theta[i],
     v = x$v[i], u = x$u[i], samples = samples[[i]]
   )
@@ -81,7 +80,6 @@ plotCompDens.mfmm(data = q.hat.st, n = n, theta = theta, parameter = "q", standa
 theta.hat <- lapply(get.mfmm.est, function(y) {
   y$theta.hat
 }) |> melt()
-
 colnames(theta.hat) <- c("value", "id")
 
 q.hat <- lapply(get.mfmm.est, function(y) {

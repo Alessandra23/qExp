@@ -146,7 +146,9 @@ plotCompDens.mfmm <- function(data, n, theta, parameter = "theta", standard = TR
   }
 
 
-  yy <- colorspace::sequential_hcl(palette = "Light Grays", n = (length(n) + 1))
+  #yy <- colorspace::sequential_hcl(palette = "Grays", n = (length(n) + 1))
+  yy <- colorRampPalette(c("black","gray80"))
+  yy <- yy((length(n) + 1))
   nn <- c("Normal", n)
 
   if(standard){
