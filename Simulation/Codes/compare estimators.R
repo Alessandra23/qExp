@@ -3,7 +3,7 @@ library(qExp)
 library(ggplot2)
 
 N <- 10000
-n = c(50,500, 1000, 5000)
+n = c(50, 500, 1000, 5000)
 theta <- c(1/9, 1, 9)
 mu <- c(1/10, log(3), 10)
 q = round((3 + theta) / (2 + theta), 2)

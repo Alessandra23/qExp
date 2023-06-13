@@ -2,6 +2,9 @@
 
 #devtools::install_github("Alessandra23/qExp")
 library(qExp)
+library(dplyr)
+library(ggplot2)
+library(reshape2)
 
 # Figure 1 ----------------------------------------------------------------
 
@@ -165,11 +168,11 @@ x <- x  |>  mutate(
 #save(mfmm.est, file="data/mfmm.est.RData")
 
 # load data
-data('mle.est')
+data('mfmm.est')
 # Fig 4 (theta hat MFMM)
 theta.hat <- lapply(mfmm.est, function(y) {
   y$theta.hat
-}) |> melt()
+}) |> reshape2::melt()
 colnames(theta.hat) <- c("value", "id")
 theta.hat <- merge(x, theta.hat)
 
@@ -215,15 +218,14 @@ plotCompDens.mfmm(data = theta.hat.st, n = n, theta = theta, parameter = "theta"
 
 # Figure 6, 7, 8 and 9 ----------------------------------------------------------------
 
-# Generate the data
 N = 10000
 n <- c(20, 30, 50, 100, 500,1000)
-mu <- log(3)
+mu <- c(1/10, log(3), 10)
 theta <- c(1/9, 1, 9)
 x.mle <- expand.grid(N = N,
-                       n = n,
-                       theta = theta)
-x.mle$mu <- rep(mu, nrow(x.mle))
+                     n = n,
+                     mu = mu,
+                     theta = theta)
 
 # #create samples
 # set.seed(2022)
@@ -231,12 +233,181 @@ x.mle$mu <- rep(mu, nrow(x.mle))
 #
 # mle.est <- list()
 # for (i in 1:length(samples.mle)) {
-#   mle.est[[i]] <- mleSamples(samples.mle[[i]], mu = mu, theta = x.mle$theta[i])
+#   mle.est[[i]] <- mleSamples(samples.mle[[i]], mu = x.mle$mu[i], theta = x.mle$theta[i])
 # }
-#save(mle.est, file="data/mle.est.RData")
+# save(mle.est, file="data/mle.est.RData")
 
 # load data
 data('mle.est')
+
+set.seed(2022)
+mu = log(3)
+theta = 9
+samp <- qexp.samples(n = 100, theta = theta, mu = mu, N = 10000)
+ests <- mleSamples(samp, mu = mu, theta = theta)
+
+ests$theta.pad.mle |> as.data.frame() |>
+  ggplot() +
+  stat_function(fun = dnorm, n = 1000, args = list(mean = 0, sd = 1), aes(colour = "Normal"), linewidth = 0.8) +
+  geom_density(aes(x = ests$theta.pad.mle), linewidth = 0.8) +
+  xlim(c(-5, 5))
+
+
+# Fig 6
+
+rows <- which(x.mle$n %in% c(100,500,1000))
+dfrows <- x.mle[rows,]
+mudf <- list()
+thetadf <- list()
+for (i in 1:length(rows)) {
+  n = dfrows[i, "n"]
+  mu = dfrows[i, "mu"]
+  theta = dfrows[i, "theta"]
+  estmu = mle.est[[rows[i]]]$mu.pad.mle
+  esttheta = mle.est[[rows[i]]]$theta.pad.mle
+
+  mudf[[i]] <- data.frame(n = rep(n, 10000), mu = rep(mu, 10000),
+                          theta = rep(theta, 10000), est = estmu)
+  thetadf[[i]] <- data.frame(n = rep(n, 10000), mu = rep(mu, 10000),
+                             theta = rep(theta, 10000), est = esttheta)
+}
+
+mudfN <- do.call(rbind,mudf)
+colnames(mudfN) <- c("n", "mu" ,  "theta",  "muest")
+thetadfN <- do.call(rbind,thetadf)
+colnames(thetadfN) <- c("n", "mu" ,  "theta",  "thetaest")
+
+
+dfF <- cbind(mudfN, thetadfN$thetaest)
+colnames(dfF) <- c("n", "mu" ,  "theta", "muest" ,"thetaest")
+dfF[dfF$mu == 0.1,"mu"] <- paste0('\u03BC'," = 1/10")
+dfF[dfF$mu == log(3),"mu"] <- paste0('\u03BC'," = log(3)")
+dfF[dfF$mu == 10,"mu"] <- paste0('\u03BC'," = 10")
+dfF$mu <- factor(dfF$mu, levels = unique(dfF$mu))
+
+dfF[dfF$theta == 1/9,"theta"] <- paste0('\u03B8'," = 1/9")
+dfF[dfF$theta == 1,"theta"] <- paste0('\u03B8'," = 1")
+dfF[dfF$theta == 9,"theta"] <- paste0('\u03B8'," = 9")
+dfF$theta <- factor(dfF$theta, levels = unique(dfF$theta))
+
+#yy <- colorspace::sequential_hcl(palette = "Light Grays", n = (3 + 1))
+yy <- colorRampPalette(c("black","gray80"))
+yy <- yy(3 + 1)
+nn <- c("Normal", c(100, 500,1000))
+
+# Fig 17
+nameLabel <- expression(hat(mu)[SML])
+dfF %>% ggplot() +
+  stat_function(fun = dnorm, n = 1000, args = list(mean = 0, sd = 1), aes(colour = "Normal", linetype = "Normal"), size = 0.8) +
+  geom_density(aes(x = muest, colour = factor(n), linetype = factor(n)), size = 0.8) +
+  xlim(c(-5, 5)) +
+  theme_classic(base_size = 20) +
+  facet_wrap(~mu) +
+  scale_linetype_manual(breaks = rev(nn), values = rev(1:length(nn))) +
+  scale_color_manual(breaks = rev(nn), values = rev(yy)) +
+  labs(y = "Density", x = nameLabel, colour = "n", linetype = "n")
+
+
+# Fig 6
+dfFT <- dfF[dfF$mu == paste0('\u03BC'," = log(3)"),]
+nameLabel <- expression(hat(mu)[SML])
+dfFT %>% ggplot() +
+  stat_function(fun = dnorm, n = 1000, args = list(mean = 0, sd = 1), aes(colour = "Normal", linetype = "Normal"), size = 0.8) +
+  geom_density(aes(x = muest, colour = factor(n), linetype = factor(n)), size = 0.8) +
+  xlim(c(-5, 5)) +
+  theme_classic(base_size = 20) +
+  facet_wrap(~theta) +
+  scale_linetype_manual(breaks = rev(nn), values = rev(1:length(nn))) +
+  scale_color_manual(breaks = rev(nn), values = rev(yy)) +
+  labs(y = "Density", x = nameLabel, colour = "n", linetype = "n")
+
+
+# Fig 7
+names <- paste0('\u03B8'," = ", theta)
+nameLabel <- expression(hat(theta)[SML])
+dfF %>% ggplot() +
+  stat_function(fun = dnorm, n = 1000, args = list(mean = 0, sd = 1), aes(colour = "Normal", linetype = "Normal"), size = 0.8) +
+  geom_density(aes(x = thetaest, colour = factor(n), linetype = factor(n)), size = 0.8) +
+  xlim(c(-5, 5)) +
+  theme_classic(base_size = 20) +
+  facet_wrap(~theta) +
+  scale_linetype_manual(breaks = rev(nn), values = rev(1:length(nn))) +
+  scale_color_manual(breaks = rev(nn), values = rev(yy)) +
+  labs(y = "Density", x = nameLabel, colour = "n", linetype = "n")
+
+
+# Fig 8
+rows <- which(x.mle$mu == log(3) & x.mle$n %in% c(20,30,50))
+dfrows <- x.mle[rows,]
+qdf <- list()
+for (i in 1:length(rows)) {
+  n = dfrows[i, "n"]
+  mu = dfrows[i, "mu"]
+  theta = dfrows[i, "theta"]
+  estq = mle.est[[rows[i]]]$q.pad.mle
+  q = round((3 + theta) / (2 + theta), 2)
+
+  qdf[[i]] <- data.frame(n = rep(n, 10000), q = rep(q), est = estq)
+}
+unique(qdfN$q)
+qdfN <- do.call(rbind, qdf)
+qdfN[qdfN$q == 1.47,"q"] <- "q = 1.47"
+qdfN[qdfN$q == 1.33,"q"] <- "q = 1.33"
+qdfN[qdfN$q == 1.09,"q"] <- "q = 1.09"
+qdfN$q <- factor(qdfN$q, levels = unique(qdfN$q))
+
+#yy <- colorspace::sequential_hcl(palette = "Light Grays", n = (3 + 1))
+yy <- colorRampPalette(c("black","gray80"))
+yy <- yy(3 + 1)
+nn <- c("Normal", c(20, 30,50))
+
+nameLabel <- expression(hat(q)[SML])
+qdfN %>% ggplot() +
+  stat_function(fun = dnorm, n = 1000, args = list(mean = 0, sd = 1), aes(colour = "Normal", linetype = "Normal"), size = 0.8) +
+  geom_density(aes(x = est, colour = factor(n), linetype = factor(n)), size = 0.8) +
+  xlim(c(-5, 5)) +
+  theme_classic(base_size = 20) +
+  facet_wrap(~q) +
+  scale_linetype_manual(breaks = rev(nn), values = rev(1:length(nn))) +
+  scale_color_manual(breaks = rev(nn), values = rev(yy)) +
+  labs(y = "Density", x = nameLabel, colour = "n", linetype = "n")
+
+
+# Fig 9
+rows <- which(x.mle$mu == log(3) & x.mle$n %in% c(100,500,1000))
+dfrows <- x.mle[rows,]
+qdf <- list()
+for (i in 1:length(rows)) {
+  n = dfrows[i, "n"]
+  mu = dfrows[i, "mu"]
+  theta = dfrows[i, "theta"]
+  estq = mle.est[[rows[i]]]$q.pad.mle
+  q = round((3 + theta) / (2 + theta), 2)
+
+  qdf[[i]] <- data.frame(n = rep(n, 10000), q = rep(q), est = estq)
+}
+unique(qdfN$q)
+qdfN <- do.call(rbind, qdf)
+qdfN[qdfN$q == 1.47,"q"] <- "q = 1.47"
+qdfN[qdfN$q == 1.33,"q"] <- "q = 1.33"
+qdfN[qdfN$q == 1.09,"q"] <- "q = 1.09"
+qdfN$q <- factor(qdfN$q, levels = unique(qdfN$q))
+
+#yy <- colorspace::sequential_hcl(palette = "Light Grays", n = (3 + 1))
+yy <- colorRampPalette(c("black","gray80"))
+yy <- yy(3 + 1)
+nn <- c("Normal", c(100,500,1000))
+
+nameLabel <- expression(hat(q)[SML])
+qdfN %>% ggplot() +
+  stat_function(fun = dnorm, n = 1000, args = list(mean = 0, sd = 1), aes(colour = "Normal", linetype = "Normal"), size = 0.8) +
+  geom_density(aes(x = est, colour = factor(n), linetype = factor(n)), size = 0.8) +
+  xlim(c(-5, 5)) +
+  theme_classic(base_size = 20) +
+  facet_wrap(~q) +
+  scale_linetype_manual(breaks = rev(nn), values = rev(1:length(nn))) +
+  scale_color_manual(breaks = rev(nn), values = rev(yy)) +
+  labs(y = "Density", x = nameLabel, colour = "n", linetype = "n")
 
 
 # Figure 10 ---------------------------------------------------------------
