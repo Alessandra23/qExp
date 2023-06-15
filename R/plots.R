@@ -156,7 +156,7 @@ plotCompDens.mfmm <- function(data, n, theta, parameter = "theta", standard = TR
       stat_function(fun = dnorm, n = 1000, args = list(mean = 0, sd = 1), aes(colour = "Normal", linetype = "Normal"), size = 0.8) +
       geom_density(aes(x = value, colour = factor(n), linetype = factor(n)), size = 0.8) +
       xlim(c(-5, 5)) +
-      theme_classic(base_size = 20) +
+      theme_classic(base_size = 22) +
       facet_wrap(~theta, labeller =  as_labeller(custLab)) +
       scale_linetype_manual(breaks = rev(nn), values = rev(1:length(nn))) +
       scale_color_manual(breaks = rev(nn), values = rev(yy)) +
@@ -165,7 +165,7 @@ plotCompDens.mfmm <- function(data, n, theta, parameter = "theta", standard = TR
     p <- data %>% ggplot() +
       geom_density(aes(x = value, colour = factor(n), linetype = factor(n)), size = 0.8) +
       xlim(c(0, 10)) +
-      theme_classic(base_size = 20) +
+      theme_classic(base_size = 22) +
       facet_wrap(~theta, labeller =  as_labeller(custLab)) +
       scale_linetype_manual(breaks = rev(n), values = rev(1:length(n))) +
       scale_color_manual(breaks = rev(n), values = rev(yy)) +

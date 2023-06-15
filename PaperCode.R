@@ -31,7 +31,7 @@ legenda.paper <- c(expression(paste(mu, " = 1.0,  ", ~theta," = 0.5 "),
 
 p.mt.paper <- ggplot(melt(df.mt.paper,id.vars='x'), aes(x,value,group=variable))+
   geom_line(aes(linetype = variable)) + ylab("f(x)")+
-  theme_classic(base_size = 20)+
+  theme_classic(base_size = 22)+
   scale_linetype_discrete(labels=legenda.paper, name=" ")+
   theme(
     legend.position = c(.95, .95),
@@ -58,7 +58,7 @@ p.comp.1 <- ggplot(melt(df.comp,id.vars='x'), aes(x,value,group=variable)) +
   geom_line(aes(linetype = variable)) +
   scale_linetype_discrete("", labels = c("q-Exponential", "Exponential"))+
   xlab("x") + ylab("f(x)") +
-  theme_classic(base_size = 20)+
+  theme_classic(base_size = 22)+
   theme(legend.position=c(0.8,0.8))
 #legend.box.background = element_rect(colour = "black"))
 
@@ -70,7 +70,7 @@ p.comp.2 <- ggplot(melt(df.comp,id.vars='x'), aes(x,value,group=variable)) +
   # xlab("x") + ylab("f(x)") +
   xlab("") + ylab("") +
   theme(legend.position=c(0.8,0.8)) +
-  theme_classic(base_size = 20)
+  theme_classic(base_size = 22)
 
 p.comp.2
 
@@ -89,12 +89,12 @@ df <- df %>% mutate(g = g.theta(theta, v, u),
                     vu = paste0(v,", ", u))
 # Fig 2(a)
 df %>% filter(v>0&u>0&v<u) %>%
-  ggplot() + geom_line(aes(x = theta, y = g, linetype = vu)) + theme_classic(base_size = 20)+
+  ggplot() + geom_line(aes(x = theta, y = g, linetype = vu)) + theme_classic(base_size = 22)+
   labs(x=expression(theta), y = bquote(paste("g(",theta,")")), linetype= "v,u")
 
 # Fig 2(b)
 df %>% filter(v>0&u>0&v>u) %>%
-  ggplot() + geom_line(aes(x = theta, y = g, linetype = vu)) + theme_classic(base_size = 20) +
+  ggplot() + geom_line(aes(x = theta, y = g, linetype = vu)) + theme_classic(base_size = 22) +
   labs(x=expression(theta), y = " ",  linetype= "v,u")
 
 
@@ -301,7 +301,7 @@ dfF %>% ggplot() +
   stat_function(fun = dnorm, n = 1000, args = list(mean = 0, sd = 1), aes(colour = "Normal", linetype = "Normal"), size = 0.8) +
   geom_density(aes(x = muest, colour = factor(n), linetype = factor(n)), size = 0.8) +
   xlim(c(-5, 5)) +
-  theme_classic(base_size = 20) +
+  theme_classic(base_size = 22) +
   facet_wrap(~mu) +
   scale_linetype_manual(breaks = rev(nn), values = rev(1:length(nn))) +
   scale_color_manual(breaks = rev(nn), values = rev(yy)) +
@@ -315,7 +315,7 @@ dfFT %>% ggplot() +
   stat_function(fun = dnorm, n = 1000, args = list(mean = 0, sd = 1), aes(colour = "Normal", linetype = "Normal"), size = 0.8) +
   geom_density(aes(x = muest, colour = factor(n), linetype = factor(n)), size = 0.8) +
   xlim(c(-5, 5)) +
-  theme_classic(base_size = 20) +
+  theme_classic(base_size = 22) +
   facet_wrap(~theta) +
   scale_linetype_manual(breaks = rev(nn), values = rev(1:length(nn))) +
   scale_color_manual(breaks = rev(nn), values = rev(yy)) +
@@ -329,7 +329,7 @@ dfF %>% ggplot() +
   stat_function(fun = dnorm, n = 1000, args = list(mean = 0, sd = 1), aes(colour = "Normal", linetype = "Normal"), size = 0.8) +
   geom_density(aes(x = thetaest, colour = factor(n), linetype = factor(n)), size = 0.8) +
   xlim(c(-5, 5)) +
-  theme_classic(base_size = 20) +
+  theme_classic(base_size = 22) +
   facet_wrap(~theta) +
   scale_linetype_manual(breaks = rev(nn), values = rev(1:length(nn))) +
   scale_color_manual(breaks = rev(nn), values = rev(yy)) +
@@ -366,7 +366,7 @@ qdfN %>% ggplot() +
   stat_function(fun = dnorm, n = 1000, args = list(mean = 0, sd = 1), aes(colour = "Normal", linetype = "Normal"), size = 0.8) +
   geom_density(aes(x = est, colour = factor(n), linetype = factor(n)), size = 0.8) +
   xlim(c(-5, 5)) +
-  theme_classic(base_size = 20) +
+  theme_classic(base_size = 22) +
   facet_wrap(~q) +
   scale_linetype_manual(breaks = rev(nn), values = rev(1:length(nn))) +
   scale_color_manual(breaks = rev(nn), values = rev(yy)) +
@@ -403,7 +403,7 @@ qdfN %>% ggplot() +
   stat_function(fun = dnorm, n = 1000, args = list(mean = 0, sd = 1), aes(colour = "Normal", linetype = "Normal"), size = 0.8) +
   geom_density(aes(x = est, colour = factor(n), linetype = factor(n)), size = 0.8) +
   xlim(c(-5, 5)) +
-  theme_classic(base_size = 20) +
+  theme_classic(base_size = 22) +
   facet_wrap(~q) +
   scale_linetype_manual(breaks = rev(nn), values = rev(1:length(nn))) +
   scale_color_manual(breaks = rev(nn), values = rev(yy)) +
