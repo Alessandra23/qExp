@@ -240,19 +240,6 @@ x.mle <- expand.grid(N = N,
 # load data
 data('mle.est')
 
-set.seed(2022)
-mu = log(3)
-theta = 9
-samp <- qexp.samples(n = 100, theta = theta, mu = mu, N = 10000)
-ests <- mleSamples(samp, mu = mu, theta = theta)
-
-ests$theta.pad.mle |> as.data.frame() |>
-  ggplot() +
-  stat_function(fun = dnorm, n = 1000, args = list(mean = 0, sd = 1), aes(colour = "Normal"), linewidth = 0.8) +
-  geom_density(aes(x = ests$theta.pad.mle), linewidth = 0.8) +
-  xlim(c(-5, 5))
-
-
 # Fig 6
 
 rows <- which(x.mle$n %in% c(100,500,1000))

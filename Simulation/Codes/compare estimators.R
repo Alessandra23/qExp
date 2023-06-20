@@ -456,10 +456,10 @@ mle <- function(dat){
 
 times <- microbenchmark::microbenchmark("MFMM" = {mfmm(dat = data)},
                                "MLE" = {mle(dat = data)},
-                               times = 1000,
+                               times = 10000,
                                unit = 'seconds')
 
-times |> autoplot() + theme_classic()
+times |> autoplot() + theme_classic(base_size = 22)
 
 
 #print(xtable::xtable(times, type = "latex"), file = "Simulation/Plots/times.tex")
